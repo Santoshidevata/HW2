@@ -34,3 +34,8 @@ gem 'haml'
 
 # Deploy with Capistrano
 # gem 'capistrano'
+
+# To use debugger
+#group :development , :test do
+ #gem 'ruby-debug19', :require => 'ruby-debug'
+#end

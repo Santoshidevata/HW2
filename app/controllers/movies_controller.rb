@@ -8,6 +8,10 @@ class MoviesController < ApplicationController
 
   def index
     @movies = Movie.all
+    @sort_by =params[:sort_by]
+    unless @sort_by.nil?
+       @movies.sort_by! { |movie| movie.send(@sort_by) }
+    end
   end
 
   def new
