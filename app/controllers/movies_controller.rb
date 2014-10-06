@@ -8,6 +8,8 @@ class MoviesController < ApplicationController
 
   def index
     @all_ratings ||=Movie.list_ratings
+    @title_hilite = "hilite" if params[:sort_by] =='title'
+    @release_date_hilite= "hilite" if params[:sort_by] =='release_date'
     params[:ratings] ||=Hash[@all_ratings.collect { |v| [v,v]}]
     @movies =Movie.where("rating IN (?)",params[:ratings].keys)
     @sort_by =params[:sort_by]
