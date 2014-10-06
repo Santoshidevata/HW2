@@ -7,10 +7,12 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.all
+    @all_ratings ||=Movie.list_ratings
+    params[:ratings] ||=Hash[@all_ratings.collect { |v| [v,v]}]
+    @movies =Movie.where("rating IN (?)",params[:ratings].keys)
     @sort_by =params[:sort_by]
     unless @sort_by.nil?
-       @movies.sort_by! { |movie| movie.send(@sort_by) }
+       @movies.sort_by!{ |movie| movie.send(@sort_by) } 
     end
   end
 
