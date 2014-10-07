@@ -8,22 +8,29 @@ class MoviesController < ApplicationController
 
   def index
       @all_ratings=Movie.pluck('DISTINCT rating')
-      if params[:ratings]
+      @ratings=@all_ratings
+      if (params[:ratings])
+        session[:ratings]=params[:ratings]
         @ratings=params[:ratings].keys
-        @movies=Movie.find_all_by_rating(@ratings)
-      else
-        @sort_by =params[:sort_by]  
-        if(@sort_by == 'title')
-          @movies=Movie.order(@sort_by)
-        elsif(@sort_by == 'release_date')
-          @movies=Movie.order(@sort_by)
-        else
-          @movies=Movie.all
-          @ratings=@all_ratings
-        end
+      elsif(session[:ratings])
+         if(session[:sort_by].nil?)
+           redirect_to movies_path({:ratings => session[:ratings]})
+         end
       end
-      
-  end
+  
+        if(params[:sort_by])
+          @sort_by =params[:sort_by] 
+          session[:sort_by]=@sort_by
+          @movies=Movie.order(@sort_by)
+          !(@ratings.nil?) ? @movies = @movies.find_all_by_rating(@ratings): @movies
+        elsif(session[:sort_by])
+           @sort_by=session[:sort_by]
+           redirect_to movies_path( {:sort_by => @sort_by, :ratings =>session[:ratings]})
+        else
+          @movies=Movie.find_all_by_rating(@ratings)
+        end
+        
+      end
 
   def new
     # default: render 'new' template
